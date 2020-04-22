@@ -21,25 +21,27 @@ authenticated = False
 while not authenticated:
     username = input("Username: ")
     password = input("Password: ")
-
-    reddit = praw.Reddit(client_id='SNiG8USK-G6UtQ',
-                            client_secret='FZGlEYxDjxc7vUaimCV-OYGdoco',
-                            user_agent = 'acturnips bot 0.2',
-                            username=username,
-                            password=password)
-    
-    subreddit = reddit.subreddit('acturnips')
-    try:
-        user = reddit.user.me()
-    except:
-        #if user doesnt exist
+    if username != '' and password != '':
+        reddit = praw.Reddit(client_id='SNiG8USK-G6UtQ',
+                                client_secret='FZGlEYxDjxc7vUaimCV-OYGdoco',
+                                user_agent = 'acturnips bot 0.2',
+                                username=username,
+                                password=password)
+        
+        subreddit = reddit.subreddit('acturnips')
+        try:
+            user = reddit.user.me()
+        except:
+            #if user doesnt exist
+            printy('\nInvalid username or password... Please try again...\n', 'rB')
+            authenticated = False
+        else: 
+            #if user exists
+            printy('\nAuthenticated! Good luck!\n', 'nB')
+            authenticated = True
+    else:
         printy('\nInvalid username or password... Please try again...\n', 'rB')
         authenticated = False
-    else: 
-        #if user exists
-        printy('\nAuthenticated! Good luck!\n', 'nB')
-        authenticated = True
-    
 
     
 history = []
