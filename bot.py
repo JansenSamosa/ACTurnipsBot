@@ -14,7 +14,7 @@ try:
 except:
     minimumprice = 200
 
-printy('\nPlease login...\n', 'bB')
+printy('\nPlease login to your reddit account...\n', 'bB')
 
 authenticated = False
 
