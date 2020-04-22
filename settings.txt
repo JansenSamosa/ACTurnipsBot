@@ -1,0 +1,3 @@
+username=greenspotj
+password=Greenspot11
+minimumprice=500

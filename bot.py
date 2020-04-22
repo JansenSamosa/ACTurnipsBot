@@ -2,23 +2,46 @@ import praw
 import requests
 import webbrowser
 import time
+import os
+import unittest
+from printy import printy
 
-f = open('credentials.txt', 'r')
-
-username = f.readline()[9:]
-password = f.readline()[9:]
+username = None
+password = None
 
 try:
-    reddit = praw.Reddit(client_id='SNiG8USK-G6UtQ',
-                        client_secret='FZGlEYxDjxc7vUaimCV-OYGdoco',
-                        user_agent = 'acturnips bot 0.1',
-                        username=username,
-                        password=password)
- 
-    subreddit = reddit.subreddit('acturnips')
+    minimumprice = int(input("Minimum price: ")[0])
 except:
-    print('Error occured! Reddit might be down, or maybe your credentials are incorrect!')
+    minimumprice = 200
 
+printy('\nPlease login...\n', 'bB')
+
+authenticated = False
+
+while not authenticated:
+    username = input("Username: ")
+    password = input("Password: ")
+
+    reddit = praw.Reddit(client_id='SNiG8USK-G6UtQ',
+                            client_secret='FZGlEYxDjxc7vUaimCV-OYGdoco',
+                            user_agent = 'acturnips bot 0.2',
+                            username=username,
+                            password=password)
+    
+    subreddit = reddit.subreddit('acturnips')
+    try:
+        user = reddit.user.me()
+    except:
+        #if user doesnt exist
+        printy('\nInvalid username or password... Please try again...\n', 'rB')
+        authenticated = False
+    else: 
+        #if user exists
+        printy('\nAuthenticated! Good luck!\n', 'nB')
+        authenticated = True
+    
+
+    
 history = []
 
 def split(str):
@@ -34,14 +57,19 @@ def getDeal():
         submissions.append(submission.title)
     first = submissions[0]
     deal = None
+    price = None
     for i, char in enumerate(first):
-        if char == '5' or char == '6' or char == '7':
-            if(split(first)[i-1].isdigit() == False):
-                price = "           Price: " + "".join(split(first)[i:i+3]) + " bells"
-                print(price)
-                deal = submissions[0]
+        try:
+            if int(char) >= minimumprice and int(char) != 9:
+                if(split(first)[i-1].isdigit() == False):
+                    price = ''
+                    price = price.join(split(first)[i:i+3])
+                    deal = submissions[0]
+        except:
+            continue
     if deal != None:
         if(all(x != firstid for x in history)):
+            printy(f'\n   Found one! {price} bells per turnip\n', 'nB')
             webbrowser.open(f'https://www.reddit.com/r/acturnips/comments/{firstid}')
             history.append(firstid)
 
@@ -50,8 +78,9 @@ while True:
     try:
         getDeal()
     except:
-        print('         Error occured! Reddit might be down, or maybe your credentials are incorrect!')
-    print(f'{i}...')
+        printy('         Error occured! Reddit might be down...', 'r')
+    printy(f'{i}...', 'g')
     time.sleep(.5)
     i += 1
+
 
